@@ -7,22 +7,25 @@ Fuente: OpenCV
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from triangulation import triangulation 
+from src.triangulation_pkg.triangulation import triangulation 
+from src.triangulation_pkg.contrast import contrast
 
 #Imagenes
-#imgname1 = 'img/sift_images/imgnube1_1.jpg'
-#imgname2 = 'img/sift_images/imgnube1_2.jpg'
-imgname1 = 'img/sift_images/imgnube2_1.jpg'
-imgname2 = 'img/sift_images/imgnube2_2.jpg'
+imgname1 = 'img/sift_images/imgnube1_1.jpg'
+imgname2 = 'img/sift_images/imgnube1_2.jpg'
+#imgname1 = 'img/sift_images/imgnube2_1.jpg'
+#imgname2 = 'img/sift_images/imgnube2_2.jpg'
 
 #Creamos objeto sift
 sift = cv2.xfeatures2d.SIFT_create()
 
 img1 = cv2.imread(imgname1)
+img1 = contrast(img1)
 gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY) # Procesamiento de imagen en escala de grises
 kp1, des1 = sift.detectAndCompute(img1,None)   #des es el descriptor
 
 img2 = cv2.imread(imgname2)
+img2 = contrast(img2)
 gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)# Procesamiento de imagen en escala de grises
 kp2, des2 = sift.detectAndCompute(img2,None)  #des es el descriptor
 
@@ -43,10 +46,10 @@ matches = bf.knnMatch(des1,des2, k=2)
 # Ajustar relación
 good = []
 for m,n in matches:
-    if m.distance < 0.5*n.distance:
+    if m.distance < 0.8*n.distance:
         good.append([m])
 
-img5 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,good[:10],None,flags=2)
+img5 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,good,None,flags=2)
 cv2.imshow("BFmatch", img5)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
@@ -64,4 +67,3 @@ pos_1 = [0, 0, 0]
 pos_2 = [0, 0, 0]
 
 p_3d = triangulation(x1, x2, orientation_1, pos_1, orientation_2, pos_2)
-
