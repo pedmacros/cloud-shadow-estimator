@@ -10,10 +10,10 @@ from matplotlib import pyplot as plt
 from triangulation import triangulation 
 
 #Imagenes
-#imgname1 = 'img/imgnube1_1.jpg'
-#imgname2 = 'img/imgnube1_2.jpg'
-imgname1 = 'img/imgnube2_1.jpg'
-imgname2 = 'img/imgnube2_2.jpg'
+#imgname1 = 'sift_images/img/imgnube1_1.jpg'
+#imgname2 = 'sift_images/img/imgnube1_2.jpg'
+imgname1 = 'sift_images/img/imgnube2_1.jpg'
+imgname2 = 'sift_images/img/imgnube2_2.jpg'
 
 #Creamos objeto sift
 sift = cv2.xfeatures2d.SIFT_create()
