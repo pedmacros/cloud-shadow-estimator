@@ -12,7 +12,7 @@ def sunpos(when, location, refraction):
     #Extraer datos
     year, month, day, hour, minute, second, timezone = when
     latitude, longitude = location
-
+    
     # Math typing shortcuts
     rad, deg = math.radians, math.degrees
     sin, cos, tan = math.sin, math.cos, math.tan
