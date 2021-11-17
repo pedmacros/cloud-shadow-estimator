@@ -21,17 +21,17 @@ sift = cv2.xfeatures2d.SIFT_create()
 
 img1 = cv2.imread(imgname1)
 img1 = contrast(img1)
-gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY) # Procesamiento de imagen en escala de grises
+#gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY) # Procesamiento de imagen en escala de grises
 kp1, des1 = sift.detectAndCompute(img1,None)   #des es el descriptor
 
 img2 = cv2.imread(imgname2)
 img2 = contrast(img2)
-gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)# Procesamiento de imagen en escala de grises
+#gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)# Procesamiento de imagen en escala de grises
 kp2, des2 = sift.detectAndCompute(img2,None)  #des es el descriptor
 
-hmerge = np.hstack((gray1, gray2)) #Costura horizontal
-cv2.imshow("gray", hmerge) #Mosaico se muestra en gris
-cv2.waitKey(0)
+#hmerge = np.hstack((gray1, gray2)) #Costura horizontal
+#cv2.imshow("gray", hmerge) #Mosaico se muestra en gris
+#cv2.waitKey(0)
 
 img3 = cv2.drawKeypoints(img1,kp1,img1,color=(255,0,255)) # Dibuje los puntos característicos y muéstrelos como círculos rojos
 img4 = cv2.drawKeypoints(img2,kp2,img2,color=(255,0,255)) # Dibuje los puntos característicos y muéstrelos como círculos rojos
