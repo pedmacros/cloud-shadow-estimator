@@ -7,24 +7,29 @@ Fuente: OpenCV
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from src.triangulation_pkg.triangulation import triangulation 
+from src.camera_calibration.fisheye_triangulation import fisheye_triangulation 
 from src.triangulation_pkg.contrast import contrast
-
+from src.camera_calibration.undistorsion import  fisheye_undistorsion
 #Imagenes
-imgname1 = 'img/sift_images/imgnube1_1.jpg'
-imgname2 = 'img/sift_images/imgnube1_2.jpg'
+#imgname1 = 'img/sift_images/imgnube1_1.jpg'
+#imgname2 = 'img/sift_images/imgnube1_2.jpg'
 #imgname1 = 'img/sift_images/imgnube2_1.jpg'
 #imgname2 = 'img/sift_images/imgnube2_2.jpg'
+
+imgname1 = 'img/sift_images/imgclase_1.jpg'
+imgname2 = 'img/sift_images/imgclase_2.jpg'
 
 #Creamos objeto sift
 sift = cv2.xfeatures2d.SIFT_create()
 
 img1 = cv2.imread(imgname1)
+img1 = fisheye_undistorsion(img1)
 img1 = contrast(img1)
 #gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY) # Procesamiento de imagen en escala de grises
 kp1, des1 = sift.detectAndCompute(img1,None)   #des es el descriptor
 
 img2 = cv2.imread(imgname2)
+img2 = fisheye_undistorsion(img2)
 img2 = contrast(img2)
 #gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)# Procesamiento de imagen en escala de grises
 kp2, des2 = sift.detectAndCompute(img2,None)  #des es el descriptor
@@ -36,7 +41,10 @@ kp2, des2 = sift.detectAndCompute(img2,None)  #des es el descriptor
 img3 = cv2.drawKeypoints(img1,kp1,img1,color=(255,0,255)) # Dibuje los puntos característicos y muéstrelos como círculos rojos
 img4 = cv2.drawKeypoints(img2,kp2,img2,color=(255,0,255)) # Dibuje los puntos característicos y muéstrelos como círculos rojos
 hmerge = np.hstack((img3, img4)) #Costura horizontal
+cv2.namedWindow("point",cv2.WINDOW_NORMAL)
+cv2.resizeWindow("point", 1200,800) 
 cv2.imshow("point", hmerge) #Mosaico se muestra en gris
+
 cv2.waitKey(0)
 
 # BFMatcher resuelve
@@ -46,10 +54,13 @@ matches = bf.knnMatch(des1,des2, k=2)
 # Ajustar relación
 good = []
 for m,n in matches:
-    if m.distance < 0.8*n.distance:
+    if m.distance < 0.3*n.distance:
         good.append([m])
 
-img5 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,good,None,flags=2)
+img5 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,good[:1],None,flags=2)
+
+cv2.namedWindow("BFmatch",cv2.WINDOW_NORMAL)
+cv2.resizeWindow("BFmatch", 1000,800)
 cv2.imshow("BFmatch", img5)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
@@ -64,6 +75,6 @@ orientation_1 = [0 ,0 ,0]
 orientation_2 = [0, 0, 0]
 
 pos_1 = [0, 0, 0]
-pos_2 = [0, 0, 0]
+pos_2 = [-0.3, 0, 0]
 
-p_3d = triangulation(x1, x2, orientation_1, pos_1, orientation_2, pos_2)
+p_3d = fisheye_triangulation(x1, x2, orientation_1, pos_1, orientation_2, pos_2)
