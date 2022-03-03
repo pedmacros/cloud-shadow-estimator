@@ -15,7 +15,7 @@ def fisheye_triangulation(x1, x2, orientation_1, pos_1, orientation_2, pos_2):
     f = open('src/camera_calibration/fisheye_calibration_data.json')
     data = json.load(f)
     #Matriz calibración
-    intrinsic = np.array(data['new_K'])
+    intrinsic = np.array(data['K'])
 
   
     ############################################################################################
@@ -37,13 +37,15 @@ def fisheye_triangulation(x1, x2, orientation_1, pos_1, orientation_2, pos_2):
 
     #Matriz de translación imagen 1
     trans_1=np.array([[x_1, y_1, z_1]])
+    
 
     #Matriz extrínseca imagen 1
     extrinsic_1=np.concatenate((rot_1, trans_1.T), axis=1)
 
     #Matriz resultante imagen 1
     mat_1=np.matmul(intrinsic,extrinsic_1)
-
+    
+    
     #########################################################################################
 
     #Parametros imagen 2
@@ -66,14 +68,13 @@ def fisheye_triangulation(x1, x2, orientation_1, pos_1, orientation_2, pos_2):
 
     #Matriz extrínseca imagen 2
     extrinsic_2=np.concatenate((rot_2, trans_2.T), axis=1)
-
+    
     #Matriz resultante imagen 2
     mat_2=np.matmul(intrinsic,extrinsic_2)
-
+    
     #Triangulación
     p_3d = cv2.triangulatePoints(mat_1, mat_2, x1, x2)
     p_3d/=p_3d[3]
 
-    print('Punto 3D calculado:',  p_3d.T)
 
     return p_3d
